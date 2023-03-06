@@ -10,6 +10,7 @@ void Vector::print() {
     std::cout << std::endl;
     return;
 }
+
 Vector::Vector(const Value* rawArray, const size_t size, float coef) {
     _data = new Value [size];
     for (int i = 0; i < size; ++i) {
@@ -43,6 +44,7 @@ Vector& Vector::operator=(const Vector& other) {
 }
 
 Vector::Vector(Vector&& other) noexcept {
+    delete [] this->_data;
     this->_data = new Value [other._size];
     this->_size = other._size;
     this->_capacity = other._capacity;
@@ -174,8 +176,10 @@ const Value& Vector::operator[](size_t idx) const {
 }
 
 long long Vector::find(const Value& value) const {
-    for (int i = 0; i < _size; ++i) {
-        if (_data[i] == value) {
+    for (int i = 0; i < _size; ++i)
+    {
+        if (_data[i] == value)
+        {
             return i;
         }
     }
@@ -230,8 +234,8 @@ Vector::Iterator Vector::Iterator::operator++() {
      return *this;
  }
     
-Vector::Iterator Vector::Iterator::operator++(int numberOfIncrease - 1) {
-    for (int i = 0; i < numberOfIncrease; ++i) {
+Vector::Iterator Vector::Iterator::operator++(int numberOfIncrease) {
+    for (int i = 0; i < numberOfIncrease - 1; ++i) {
         _ptr++;
     }
     return *this;

@@ -2,6 +2,8 @@
 #include <cstdlib>
 #include "Vector.h"
 
+using namespace std;
+
 
 void Vector::print() {
     for (int i = 0; i < this->_size; ++i) {
@@ -44,7 +46,6 @@ Vector& Vector::operator=(const Vector& other) {
 }
 
 Vector::Vector(Vector&& other) noexcept {
-    delete [] this->_data;
     this->_data = new Value [other._size];
     this->_size = other._size;
     this->_capacity = other._capacity;
@@ -125,6 +126,28 @@ void Vector::pushFront(const Value& value) {
     return;
 }
 
+void Vector::insert(const Value& value, size_t pos) {
+    if (_size == _capacity) {
+        pushBack(0);
+    }
+    for (int i = _size - 1; i > pos; --i) {
+        _data[i] = _data[i-1];
+    }
+    _data[pos] = value;
+    return;
+}
+
+void Vector::insert(const Value* values, size_t size, size_t pos) {
+    for (int i = 0; i < size; ++i) {
+        insert(values[i], pos);
+        pos++;
+    }
+}
+
+void Vector::insert(const Vector& vector, size_t pos) {
+    insert(vector._data, vector._size, pos);
+}
+
 void Vector::popBack() {
     _size--;
     return;
@@ -166,6 +189,10 @@ size_t Vector::capacity() const {
     return _capacity;
 }
 
+double Vector::loadFactor() const {
+    return _size / _capacity;
+}
+
 
 Value& Vector::operator[](size_t idx) {
     return _data[idx];
@@ -176,10 +203,8 @@ const Value& Vector::operator[](size_t idx) const {
 }
 
 long long Vector::find(const Value& value) const {
-    for (int i = 0; i < _size; ++i)
-    {
-        if (_data[i] == value)
-        {
+    for (int i = 0; i < _size; ++i) {
+        if (_data[i] == value) {
             return i;
         }
     }
@@ -231,14 +256,8 @@ const Value* Vector::Iterator::operator->() const {
     
 Vector::Iterator Vector::Iterator::operator++() {
      _ptr++;
+     
      return *this;
- }
-    
-Vector::Iterator Vector::Iterator::operator++(int numberOfIncrease) {
-    for (int i = 0; i < numberOfIncrease - 1; ++i) {
-        _ptr++;
-    }
-    return *this;
 }
     
 bool  Vector::Iterator::operator==(const Iterator& other) const {
@@ -257,4 +276,11 @@ Vector::Iterator Vector::begin() {
 Vector::Iterator Vector::end() {
     Vector::Iterator A(&_data[_size - 1]);
     return A;
+}
+
+Vector::Iterator Vector::Iterator::operator++(int numberOfIncrease) {
+    for (int i = 0; i < numberOfIncrease + 1; ++i) {
+        _ptr++;
+    }
+    return *this;
 }

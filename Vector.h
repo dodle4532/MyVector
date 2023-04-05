@@ -1,59 +1,38 @@
 #pragma once
-#include <iostream>
 
-/// type of vector item
-/// TODO: change to template
 using Value = double;
-
+//! \brief Класс, реализующий С++ контейнер vector для типа int
 class Vector
 {
 public:
-    // All c-tors and "=" operators make vectors 
-    // where _capacity is equal to _size
+    //! Конструктор без параметров
     Vector() = default;
+    //! Конструктор с параметрами
     Vector(const Value* rawArray, const size_t size, float coef = 2.0f);
-
+    //! Конструктор копирования
+    //! \param other - копируемый объект
     explicit Vector(const Vector& other);
-    Vector& operator=(const Vector& other);// передача значений вектора в другой вектор 
-
+    //! Оператор присваивания копированием
+    //! \param other - копируемый объект
+    Vector& operator=(const Vector& other);
+    //! Конструктор перемещения
+    //! \param other - перемещаемый объект
     explicit Vector(Vector&& other) noexcept;
-    Vector& operator=(Vector&& other) noexcept;// передать and очистить то что передали 
-
+    //! Оператор присваивания перемещением
+    //! \param other - перемещаемый объект
+    Vector& operator=(Vector&& other) noexcept;
+    //! Деструктор
     ~Vector();
 
-    /*!
-        \brief Add element to the end of vector
 
-        Complexity is amort(O(1))
-
-        \param value: value which must be added
-    */
     void pushBack(const Value& value);
-
-    /*!
-        \brief Add element to the begin of vector
-
-        \param value: value which must be added
-    */
     void pushFront(const Value& value);
 
-    /*!
-        \brief Insert item(s) to vector at passed index
-    */
     void insert(const Value& value, size_t pos);
-    void insert(const Value* values, size_t size, size_t pos);// mass elem sizee-kolvo pos-otkyda nachinat'
-    void insert(const Vector& vector, size_t pos);//polychaem size value iz vectora
+    void insert(const Value* values, size_t size, size_t pos);
+    void insert(const Vector& vector, size_t pos);
 
-    /*!
-        \brief Remove element from the end of vector
-
-        Complexity is amort(O(1))
-    */
     void popBack();
-
-    /*!
-        \brief Remove element from the begin of vector
-    */
     void popFront();
 
     /*!
@@ -79,30 +58,18 @@ public:
     */
     void eraseBetween(size_t beginPos, size_t endPos);
 
-    /*!
-        Returns size of vector
-    */
+
     size_t size() const;
-
-    /*!
-        Returns capacity of vector
-    */
     size_t capacity() const;
-
-    /*!
-        Returns load factor (size / capacity)
-    */
     double loadFactor() const;
 
-    /*!
-        Access to item by index
-    */
+    //! Доступ к элементу по индексу
     Value& operator[](size_t idx);
+    //! Доступ к элементу по индексу
     const Value& operator[](size_t idx) const;
 
-    /*!
-        Returns index of first 
-    */
+    //! Поиск первого вхождения значения
+    //! \return - индекс элемента
     long long find(const Value& value) const;
    
     /*!
@@ -115,41 +82,36 @@ public:
         Decreases _capacity to _size.
     */
     void shrinkToFit();
-
-    /*!
-        Print vector
-    */
-    void print();
-
-class Iterator
+	
+    class Iterator
     {
         Value* _ptr;
     public:
-
         explicit Iterator(Value* ptr);
-        Value& operator*(); 
     
-        const Value& operator*() const; 
+        Value& operator*();
     
-        Value* operator->(); 
+        const Value& operator*() const;
+    
+        Value* operator->();
     
         const Value* operator->() const;
     
-        Iterator operator++(); 
+        Iterator operator++();
     
-        Iterator operator++(int numberOfIncrease);
+        Iterator operator++(int);
     
-        bool operator==(const Iterator& other) const; 
+        bool operator==(const Iterator& other) const;
     
         bool operator!=(const Iterator& other) const;
     };
 
-    Iterator begin();// возвращает итератор на 1 элемент нашего вектора
-    Iterator end();// возвращает итератор на последний элемент нашего вектора
-
+    Iterator begin();
+    Iterator end();
 private:
-   	Value* _data = nullptr;
+    Value* _data = nullptr;
     size_t _size = 0;
     size_t _capacity = 0;
     float _multiplicativeCoef = 2.0f;
 };
+
